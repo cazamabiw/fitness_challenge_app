@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+pydantic[email]
+PyJWT
+python-decouple
+sqlalchemy
+psycopg2
+bcrypt

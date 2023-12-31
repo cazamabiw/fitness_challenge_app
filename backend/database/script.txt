@@ -1,0 +1,193 @@
+-- postgres database
+-- \l = list db
+-- \c {db_name} = select database
+-- \d = list table
+
+CREATE DATABASE fitness_challenge_db;
+
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(128) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_profiles (
+    profile_id SERIAL PRIMARY KEY,
+    user_id INTEGER UNIQUE REFERENCES users(user_id) ON DELETE CASCADE,
+    age INTEGER,
+    weight_kg FLOAT,
+    height_cm FLOAT,
+    fitness_goals TEXT,
+    experience_level TEXT,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE workouts (
+    workout_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+    workout_date TIMESTAMPTZ NOT NULL,
+    notes TEXT,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE muscles (
+    muscle_id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE exercises (
+    exercise_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    muscle_id INTEGER REFERENCES muscles(muscle_id),
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE workout_exercises (
+    workout_id INTEGER REFERENCES workouts(workout_id) ON DELETE CASCADE,
+    exercise_id INTEGER REFERENCES exercises(exercise_id) ON DELETE CASCADE,
+    sets INTEGER NOT NULL,
+    reps INTEGER NOT NULL,
+    weight_kg FLOAT,
+    notes TEXT,
+    PRIMARY KEY (workout_id, exercise_id)
+);
+
+CREATE INDEX idx_user_profiles_user_id ON user_profiles(user_id);
+CREATE INDEX idx_exercises_name ON exercises(name);
+CREATE INDEX idx_exercises_muscle_id ON exercises(muscle_id);
+CREATE INDEX idx_workout_exercises_workout_id ON workout_exercises(workout_id);
+CREATE INDEX idx_workout_exercises_exercise_id ON workout_exercises(exercise_id);
+
+-- insert data
+INSERT INTO muscles (name) VALUES
+    ('Chest'),
+    ('Back'),
+    ('Legs'),
+    ('Biceps'),
+    ('Triceps'),
+    ('Shoulders');
+
+INSERT INTO exercises (name, description, muscle_id) VALUES
+    ('Dumbbell Bench Press', 'Chest exercise using dumbbells.', 1),
+    ('Incline Barbell Bench Press', 'Incline bench press for upper chest.', 1),
+    ('Chest Flyes', 'Isolation exercise for chest muscles.', 1),
+    ('Decline Push-Ups', 'Bodyweight exercise focusing on lower chest.', 1),
+    ('Machine Chest Press', 'Chest press using a machine.', 1),
+    ('Pec Deck Machine', 'Isolation exercise for pectoral muscles.', 1),
+    ('Cable Crossover', 'Chest flye using cable machines.', 1),
+    ('Push-Ups', 'Basic bodyweight exercise for chest.', 1),
+    ('Barbell Bench Press', 'Classic chest exercise using a barbell.', 1),
+    ('Wide-Grip Dips', 'Dips to target the outer chest.', 1),
+    ('Smith Machine Bench Press', 'Bench press using a Smith machine.', 1),
+    ('Plyometric Push-Ups', 'Explosive push-ups for chest power.', 1),
+    ('Incline Dumbbell Flyes', 'Isolation exercise for upper chest.', 1),
+    ('Close-Grip Bench Press', 'Targets the triceps and inner chest.', 1),
+    ('Chest Pullover', 'Combines chest and back engagement.', 1),
+    ('Crossbody Hammer Press', 'Targets the inner chest with a twist.', 1),
+    ('Reverse Grip Bench Press', 'Emphasizes the lower part of the chest.', 1),
+    ('Incline Push-Ups', 'Push-ups with an incline for upper chest.', 1),
+    ('Chest Squeeze Press', 'Squeezing dumbbells together during presses.', 1),
+    ('Machine Decline Press', 'Machine-based decline chest press.', 1),
+    ('Deadlift', 'Full-body exercise targeting back muscles.', 2),
+    ('Pull-Ups', 'Bodyweight exercise for upper back.', 2),
+    ('Bent Over Rows', 'Compound exercise for mid-back.', 2),
+    ('Lat Pulldowns', 'Targets the latissimus dorsi muscles.', 2),
+    ('T-Bar Rows', 'Compound rowing exercise using a T-bar.', 2),
+    ('Seated Cable Rows', 'Isolation exercise for the back.', 2),
+    ('One-Arm Dumbbell Rows', 'Single-arm rowing exercise.', 2),
+    ('Chin-Ups', 'Variation of pull-ups targeting the biceps.', 2),
+    ('Barbell Shrugs', 'Targets the upper trapezius muscles.', 2),
+    ('Face Pulls', 'Targets the upper back and rear deltoids.', 2),
+    ('Wide-Grip Pulldowns', 'Lat pulldowns with a wide grip.', 2),
+    ('Hyperextensions', 'Strengthens lower back muscles.', 2),
+    ('Renegade Rows', 'Combines push-up and rowing movements.', 2),
+    ('Meadows Rows', 'Rowing variation for lats and upper back.', 2),
+    ('Rack Pulls', 'Partial deadlifts focusing on the upper back.', 2),
+    ('Reverse Grip Lat Pulldowns', 'Targets the upper back with a reverse grip.', 2),
+    ('Kettlebell Swings', 'Full-body exercise with emphasis on the back.', 2),
+    ('Inverted Rows', 'Bodyweight rows using a bar or suspension trainer.', 2),
+    ('Single-Arm Cable Rows', 'Isolation exercise with single-arm rows.', 2),
+    ('Trap Bar Deadlift', 'Deadlift variation using a trap bar.', 2),
+    ('Squats', 'Compound exercise for quadriceps.', 3),
+    ('Lunges', 'Single-leg exercise targeting quads and glutes.', 3),
+    ('Leg Press', 'Machine exercise for overall leg development.', 3),
+    ('Deadlift', 'Full-body exercise targeting hamstrings and lower back.', 3),
+    ('Hack Squat', 'Squat variation using a specialized machine.', 3),
+    ('Leg Extensions', 'Isolation exercise for quadriceps.', 3),
+    ('Leg Curls', 'Isolation exercise for hamstrings.', 3),
+    ('Calf Raises', 'Targets the muscles of the calf.', 3),
+    ('Step-Ups', 'Step exercises to engage quads and glutes.', 3),
+    ('Box Jumps', 'Plyometric exercise for lower body power.', 3),
+    ('Sumo Deadlift', 'Deadlift variation with a wide stance.', 3),
+    ('Barbell Hip Thrust', 'Targets glutes and hamstrings.', 3),
+    ('Romanian Deadlift', 'Hamstring-focused deadlift variation.', 3),
+    ('Front Squats', 'Squat variation emphasizing the front of the legs.', 3),
+    ('Walking Lunges', 'Dynamic lunges for overall leg strength.', 3),
+    ('Seated Leg Press', 'Machine-based seated leg press.', 3),
+    ('Standing Calf Raises', 'Calf exercise with a focus on stability.', 3),
+    ('Bulgarian Split Squats', 'Single-leg squats for quads and glutes.', 3),
+    ('Hamstring Curl', 'Machine-based exercise for hamstrings.', 3),
+    ('Goblet Squats', 'Squat variation using a kettlebell or dumbbell.', 3),
+    ('Barbell Curl', 'Basic bicep isolation exercise using a barbell.', 4),
+    ('Hammer Curl', 'Alternating dumbbell curl for bicep and forearm.', 4),
+    ('Preacher Curl', 'Isolation exercise using a preacher bench.', 4),
+    ('Incline Dumbbell Curl', 'Curling exercise on an inclined bench.', 4),
+    ('Concentration Curl', 'Isolation exercise for focused bicep contraction.', 4),
+    ('EZ Bar Curl', 'Curling exercise using an EZ bar.', 4),
+    ('Reverse Barbell Curl', 'Targets the brachialis and forearm.', 4),
+    ('Seated Alternating Dumbbell Curl', 'Seated variation of alternating curls.', 4),
+    ('Zottman Curl', 'Combines bicep and forearm work.', 4),
+    ('Spider Curl', 'Performed on an incline bench for maximum bicep activation.', 4),
+    ('21s', 'Curling exercise with partial reps at different ranges.', 4),
+    ('Cable Curl', 'Curling exercise using cable machines.', 4),
+    ('Cross Body Hammer Curl', 'Hammer curls with a crossing motion.', 4),
+    ('Scott Curl', 'Named after Larry Scott, emphasizing peak bicep.', 4),
+    ('Seated Cable Curl', 'Curling exercise using cable machines while seated.', 4),
+    ('Alternating Hammer Curl', 'Alternating curls with a hammer grip.', 4),
+    ('Dumbbell Curl', 'Basic curling exercise using dumbbells.', 4),
+    ('Machine Bicep Curl', 'Machine-based exercise for bicep isolation.', 4),
+    ('Standing Barbell Curl', 'Curling exercise using a barbell while standing.', 4),
+    ('Incline Hammer Curl', 'Hammer curls performed on an incline bench.', 4),
+    ('Tricep Dips', 'Bodyweight exercise for triceps.', 5),
+    ('Skull Crushers', 'Barbell exercise for tricep isolation.', 5),
+    ('Tricep Kickbacks', 'Isolation exercise using dumbbells.', 5),
+    ('Close-Grip Bench Press', 'Targets the triceps and inner chest.', 5),
+    ('Overhead Tricep Extension', 'Extension exercise using a barbell or dumbbell.', 5),
+    ('Tricep Rope Pushdown', 'Pushdown exercise using cable machines.', 5),
+    ('Diamond Push-Ups', 'Push-up variation emphasizing triceps.', 5),
+    ('EZ Bar Skull Crushers', 'Skull crushers using an EZ bar.', 5),
+    ('Tricep Bench Dips', 'Dips performed using a bench for triceps.', 5),
+    ('Reverse Grip Tricep Pushdown', 'Pushdown exercise with a reverse grip.', 5),
+    ('One-Arm Dumbbell Tricep Extension', 'Single-arm extension exercise.', 5),
+    ('Tate Press', 'Combination of chest and tricep exercise.', 5),
+    ('Tricep Pulls', 'Pulling motion targeting the triceps.', 5),
+    ('Tricep Hammer Press', 'Hammer press variation for triceps.', 5),
+    ('Single-Arm Cable Tricep Extension', 'Isolation exercise with cable machines.', 5),
+    ('Standing Tricep Extension', 'Extension exercise using a cable machine.', 5),
+    ('Tricep Tendon Press', 'Targets the long head of the triceps.', 5),
+    ('Tricep Overhead Extension with Rope', 'Rope extension exercise.', 5),
+    ('Decline Tricep Extension', 'Tricep extension on a decline bench.', 5),
+    ('Kettlebell Tricep Extension', 'Extension exercise using a kettlebell.', 5),
+    ('Overhead Press', 'Compound exercise for overall shoulder development.', 6),
+    ('Lateral Raises', 'Isolation exercise for lateral deltoids.', 6),
+    ('Front Raises', 'Isolation exercise for front deltoids.', 6),
+    ('Reverse Flyes', 'Targets the rear deltoids and upper back.', 6),
+    ('Upright Rows', 'Exercise targeting the traps and lateral deltoids.', 6),
+    ('Face Pulls', 'Targets the rear deltoids and upper back.', 6),
+    ('Shrugs', 'Targets the trapezius muscles.', 6),
+    ('Seated Dumbbell Press', 'Pressing exercise performed while seated.', 6),
+    ('Arnold Press', 'Compound exercise named after Arnold Schwarzenegger.', 6),
+    ('Side Plank Lateral Raise', 'Lateral raises performed from a side plank position.', 6),
+    ('Barbell Front Raise', 'Front raise exercise using a barbell.', 6),
+    ('Dumbbell Scaption', 'Targets the rotator cuff muscles and front deltoids.', 6),
+    ('Reverse Pec Deck Machine', 'Targets the rear deltoids using a pec deck machine.', 6),
+    ('Barbell Shrug Behind Back', 'Shrugs performed behind the back.', 6),
+    ('Seated Bent Over Lateral Raise', 'Targets the rear deltoids from a seated position.', 6),
+    ('Cuban Press', 'Combines shoulder external rotation and overhead press.', 6),
+    ('Reverse Cable Crossover', 'Reverse motion of cable crossovers to target rear deltoids.', 6),
+    ('Single-Arm Cable Lateral Raise', 'Lateral raise using a cable machine with one arm at a time.', 6);
