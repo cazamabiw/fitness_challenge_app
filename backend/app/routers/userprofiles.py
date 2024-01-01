@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from ..auth.auth_bearer import JWTBearer
 from ..config import SessionLocal
 from sqlalchemy.orm import Session
-from ..models.user_profile.schemas import ResponseUserProfile, RequestUserProfile
+from ..models.user_profile.schemas import RequestUserProfile
 from ..services.userprofile_service import (
     create_user_profile,
     update_user_profile,
@@ -14,9 +14,10 @@ from ..services.user_service import (
 router = APIRouter(
     prefix="/userprofiles",
     tags=["userprofiles"],
-    #dependencies=[Depends(JWTBearer())],
+    dependencies=[Depends(JWTBearer())],
     responses={404: {"description": "Not found"}},
 )
+
 def get_db():
     db = SessionLocal()
     try:

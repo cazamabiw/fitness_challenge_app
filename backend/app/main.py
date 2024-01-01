@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from .config import ALLOWED_HOSTS, engine
-from .routers import users, auth, muscles
+from .routers import users, auth, muscles, userprofiles
 from fastapi.middleware.cors import CORSMiddleware
 
 import app.models.muscle.muscle
@@ -18,9 +18,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 app.include_router(users.router)
-app.include_router(auth.router)
+app.include_router(userprofiles.router)
 app.include_router(muscles.router)
+app.include_router(auth.router)
+
+
 @app.get("/")
 async def root():
     return {"message": "Hello Bigger Applications!"}
