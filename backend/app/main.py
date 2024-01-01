@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from .config import ALLOWED_HOSTS, engine
-from .routers import users, auth, muscles, userprofiles
+from .routers import users, auth, muscles, userprofiles, exercises, workouts, workout_exercises
 from fastapi.middleware.cors import CORSMiddleware
 
 import app.models.muscle.muscle
@@ -18,10 +18,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 app.include_router(users.router)
 app.include_router(userprofiles.router)
 app.include_router(muscles.router)
+app.include_router(exercises.router)
+app.include_router(workouts.router)
+app.include_router(workout_exercises.router)
 app.include_router(auth.router)
 
 

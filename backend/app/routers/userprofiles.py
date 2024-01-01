@@ -38,12 +38,14 @@ def create_userprofile_endpoint(request:RequestUserProfile , db: Session = Depen
 
     return create_user_profile(db, request)
 
+
 @router.get("/{user_id}")
-def read_userprofile_endpoint(user_id: int, db: Session = Depends(get_db)):
+def get_userprofile_endpoint(user_id: int, db: Session = Depends(get_db)):
     _user = get_user_profile(db, user_id)
     if _user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return _user
+
 
 @router.put("/{user_id}")
 def update_userprofile_endpoint(request: RequestUserProfile, db: Session = Depends(get_db)):

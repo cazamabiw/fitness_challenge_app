@@ -26,15 +26,19 @@ def get_db():
         db.close()
 
 @router.get("/")
-def get_muscles(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return get_all_muscles(db, skip=skip, limit=limit)
+def get_muscles_endpoint(skip: int, limit: int, db: Session = Depends(get_db)):
+    _muscle = get_all_muscles(db, skip=skip, limit=limit)
+    if _muscle is None:
+        raise HTTPException(status_code=404, detail="Muscle not found")
+    return _muscle
+
 
 @router.get("/{muscle_id}")
-def get_muscle(muscle_id: int, db: Session = Depends(get_db)):
-    muscle = get_muscle_by_id(db, muscle_id)
-    if muscle is None:
+def get_muscle_endpoint(muscle_id: int, db: Session = Depends(get_db)):
+    _muscle = get_muscle_by_id(db, muscle_id)
+    if _muscle is None:
         raise HTTPException(status_code=404, detail="Muscle not found")
-    return muscle
+    return _muscle
 
 @router.post("/")
 async def create_muscle_endpoint(request: RequestMuscle, db: Session = Depends(get_db)):

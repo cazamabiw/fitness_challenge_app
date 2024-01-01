@@ -55,9 +55,9 @@ def delete_user(db: Session, user_id: int):
 
 
 def login_user(db: Session, user: RequestUserLogin):
-    current_user = get_user_by_username(db, user.username)
-    if current_user and verify_password(user.password, current_user.password_hash):
-        return current_user
+    _current_user = get_user_by_username(db, user.username)
+    if _current_user and verify_password(user.password, _current_user.password_hash):
+        return _current_user
     return None
 
 

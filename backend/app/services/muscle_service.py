@@ -3,7 +3,7 @@ from app.models.muscle.muscle import Muscle
 from app.models.muscle.schemas import ResponseMuscle, RequestMuscle
 
 
-def get_all_muscles(db: Session, skip: int = 0, limit: int = 10):
+def get_all_muscles(db: Session, skip: int, limit: int):
     return db.query(Muscle).offset(skip).limit(limit).all()
 
 
