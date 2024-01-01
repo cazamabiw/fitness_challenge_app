@@ -26,35 +26,35 @@ def get_db():
 
 @router.post("/")
 def create_user_endpoint(request: RequestUser, db: Session = Depends(get_db)):
-    user = get_user_by_username(db, request.username)
-    if user:
+    _user = get_user_by_username(db, request.username)
+    if _user:
         raise HTTPException(status_code=400, detail="Username already registered")
     return create_user(db, user=request)
 
 @router.get("/{user_id}")
 def read_user_endpoint(user_id: int, db: Session = Depends(get_db)):
-    user = get_user(db, user_id)
-    if user is None:
+    _user = get_user(db, user_id)
+    if _user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    return user
+    return _user
 
 @router.put("/{user_id}")
 def update_user_endpoint(request: RequestUser, db: Session = Depends(get_db)):
-    user = update_user(db,request)
-    if user is None:
+    _user = update_user(db,request)
+    if _user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    return user
+    return _user
 
 @router.delete("/{user_id}")
 def delete_muscle_endpoint(user_id: int, db: Session = Depends(get_db)):
-    _muscle = delete_user(db, user_id)
-    if _muscle is None:
+    _user = delete_user(db, user_id)
+    if _user is None:
         raise HTTPException(status_code=404, detail="User not found")
-    return _muscle
+    return _user
 
 @router.post("/login/")
 def login_user_endpoint(request: RequestUserLogin, db: Session = Depends(get_db)):
-    user = login_user(db, user=request)
-    if user is None:
+    _user = login_user(db, user=request)
+    if _user is None:
         raise HTTPException(status_code=401, detail="Invalid username or password!")
-    return user
+    return _user
