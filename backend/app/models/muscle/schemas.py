@@ -19,3 +19,5 @@ class ResponseMuscle(BaseModel, Generic[T]):
     message: str
     result: Optional[T] = None
 
+
+

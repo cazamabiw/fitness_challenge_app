@@ -10,11 +10,9 @@ Base = declarative_base()
 class WorkoutExercise(Base):
     __tablename__ = "workout_exercises"
 
-    workout_id = Column(Integer, ForeignKey(Workout.workout_id), primary_key=True)
-    exercise_id = Column(Integer, ForeignKey(Exercise.exercise_id), primary_key=True)
-    sets = Column(Integer, nullable=False)
-    reps = Column(Integer, nullable=False)
-    weight_kg = Column(Float)
+    workout_exercise_id = Column(Integer, primary_key=True, index=True)
+    workout_id = Column(Integer, ForeignKey(Workout.workout_id), nullable=False)
+    exercise_id = Column(Integer, ForeignKey(Exercise.exercise_id), nullable=False)
     notes = Column(Text)
 
     workout = relationship(Workout)

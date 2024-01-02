@@ -11,6 +11,7 @@ from ..services.muscle_service import (
     delete_muscle,
     update_muscle
 )
+
 router = APIRouter(
     prefix="/muscles",
     tags=["muscles"],
@@ -27,10 +28,10 @@ def get_db():
 
 @router.get("/")
 def get_muscles_endpoint(skip: int, limit: int, db: Session = Depends(get_db)):
-    _muscle = get_all_muscles(db, skip=skip, limit=limit)
-    if _muscle is None:
+    _muscles = get_all_muscles(db, skip=skip, limit=limit)
+    if len(_muscles) == 0:
         raise HTTPException(status_code=404, detail="Muscle not found")
-    return _muscle
+    return _muscles
 
 
 @router.get("/{muscle_id}")

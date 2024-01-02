@@ -4,14 +4,14 @@ from pydantic import BaseModel
 T = TypeVar('T')
 
 
-class RequestWorkoutExercise(BaseModel):
+class RequestSet(BaseModel):
+    set_id: int
     workout_exercise_id: int
-    workout_id: int
-    exercise_id: int
-    notes: str
+    reps: int
+    weight_kg: float
 
 
-class ResponseWorkoutExercise(BaseModel, Generic[T]):
+class ResponseSet(BaseModel, Generic[T]):
     is_success: bool
     message: str
     result: Optional[T] = None

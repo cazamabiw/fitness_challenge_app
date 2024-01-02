@@ -29,10 +29,10 @@ def get_db():
 
 @router.get("/")
 def get_exercises_endpoint(skip: int, limit: int, db: Session = Depends(get_db)):
-    _exercise = get_all_exercises(db, skip=skip, limit=limit)
-    if _exercise is None:
+    _exercises = get_all_exercises(db, skip=skip, limit=limit)
+    if len(_exercises) == 0:
         raise HTTPException(status_code=404, detail="Exercise not found")
-    return _exercise
+    return _exercises
 
 
 @router.get("/{exercise_id}")
@@ -46,7 +46,7 @@ def get_exercise_endpoint(exercise_id: int, db: Session = Depends(get_db)):
 @router.get("/get_exercise_by_muscle_id/{muscle_id}")
 def get_exercise_by_muscle_id_endpoint(muscle_id: int, db: Session = Depends(get_db)):
     _exercises = get_exercise_by_muscle_id(db, muscle_id)
-    if _exercises is None:
+    if len(_exercises) == 0:
         raise HTTPException(status_code=404, detail="Exercise not found")
     return _exercises
 
@@ -54,7 +54,7 @@ def get_exercise_by_muscle_id_endpoint(muscle_id: int, db: Session = Depends(get
 @router.get("/search_exercises_by_name/{query}")
 def search_exercises_by_name_endpoint(query: str, db: Session = Depends(get_db)):
     _exercises = search_exercises_by_name(db, query)
-    if _exercises is None:
+    if len(_exercises) == 0:
         raise HTTPException(status_code=404, detail="Exercise not found.")
     return _exercises
 

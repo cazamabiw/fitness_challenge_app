@@ -48,13 +48,17 @@ CREATE TABLE exercises (
 
 
 CREATE TABLE workout_exercises (
+    workout_exercise_id SERIAL PRIMARY KEY,
     workout_id INTEGER REFERENCES workouts(workout_id) ON DELETE CASCADE,
     exercise_id INTEGER REFERENCES exercises(exercise_id) ON DELETE CASCADE,
-    sets INTEGER NOT NULL,
+    notes TEXT
+);
+
+CREATE TABLE sets (
+    set_id SERIAL PRIMARY KEY,
+    workout_exercise_id INTEGER REFERENCES workout_exercises(workout_exercise_id) ON DELETE CASCADE,
     reps INTEGER NOT NULL,
-    weight_kg FLOAT,
-    notes TEXT,
-    PRIMARY KEY (workout_id, exercise_id)
+    weight_kg FLOAT
 );
 
 CREATE INDEX idx_user_profiles_user_id ON user_profiles(user_id);
@@ -62,6 +66,7 @@ CREATE INDEX idx_exercises_name ON exercises(name);
 CREATE INDEX idx_exercises_muscle_id ON exercises(muscle_id);
 CREATE INDEX idx_workout_exercises_workout_id ON workout_exercises(workout_id);
 CREATE INDEX idx_workout_exercises_exercise_id ON workout_exercises(exercise_id);
+CREATE INDEX idx_sets_workout_exercise_id ON sets (workout_exercise_id);
 
 -- insert data
 INSERT INTO muscles (name) VALUES
